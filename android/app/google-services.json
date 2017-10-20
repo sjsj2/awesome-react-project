@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "833185333176",
+    "firebase_url": "https://react-native-test-3482d.firebaseio.com",
+    "project_id": "react-native-test-3482d",
+    "storage_bucket": "react-native-test-3482d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833185333176:android:f652121c46be64e7",
+        "android_client_info": {
+          "package_name": "com.awesomeprojectn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "833185333176-6khvc5to53hqeegui33pdlsdso2uco39.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCynJVg7qnwOA_yZFUJmu1VMVYx5DQxgMM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -91,7 +91,7 @@
 //       </View>
 //     );
 //   }
-// } 
+// }
 // export const SimpleApp = StackNavigator({
 //   Home: { screen: HomeScreen },
 //   Chat : {screen : ChatScreen}

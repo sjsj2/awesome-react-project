@@ -2,44 +2,82 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Image } from "react-native";
 import { reduxForm, Field } from 'redux-form';
-import { Alert,TextInput, View, ScrollView, Text,TouchableOpacity,button } from 'react-native';
+import { StyleSheet, Alert,TextInput, View, ScrollView, Text,TouchableOpacity,button } from 'react-native';
 import firebase from 'react-native-firebase';
 
+import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',flexDirection: 'row'
+  },
+});
 class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
       inputEmail : '',
       inputPW : '',
-      isAuthenticated: false,
+      isAuthenticated: "false",
       user : null,
     };
     this.myTextInput = this.myTextInput.bind(this);
     this.loginWithEmail = this.loginWithEmail.bind(this);
+    this.loginWithGoogle = this.loginWithGoogle.bind(this);
   }
 
   componentDidMount() {
+    GoogleSignin.configure({
+      scopes : ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/user.birthday.read". "https://www.googleapis.com/auth/contacts"],
+      webClientId : '833185333176-6khvc5to53hqeegui33pdlsdso2uco39.apps.googleusercontent.com',
+      offlineAccess : false
+    })
+    .then(() => {
+      GoogleSignin.currentUserAsync().then((user) => {
+        console.log('USER : ', user);
+        if(user) {
+          this.setState({isAuthenticated : "google", user: user});
+          this.props.navigation.navigate("Home",{isAuthenticated : this.state.isAuthenticated, user : this.state.user});
+        }
+      }).done();
+    });
   }
+
   loginWithGoogle() {
-    const cred = firebase.auth.GoogleAuthProvider.credential(
-        idToken,
-        accessToken,
-    );
+    GoogleSignin.signIn()
+    .then((user) => {
+      this.setState({isAuthenticated : "google", user: user});
+      const cred = firebase.auth.GoogleAuthProvider.credential(
+          user.idToken,
+          user.accessToken,
+      );
+      // firebase.auth().signInWithCredential(cred).then(()=>{
+        this.props.navigation.navigate("Home",{isAuthenticated : this.state.isAuthenticated, user : this.state.user});
+      // }).catch(error=>{console.log('firebase error');})
+    })
+    .catch((err) => {
+      console.log('WRONG SIGNIN', err);
+    })
+    .done();
   }
   loginWithEmail() {
     firebase.auth().signInWithEmailAndPassword(this.state.inputEmail,this.state.inputPW)
       .then((confirmResult)=>{
         if(confirmResult._auth.authenticated) {
           console.log(confirmResult);
-          // this.state = {
-          //   isAuthenticated : true,
-          //   user : confirmResult._user,
-          //   inputEmail : '',
-          //   inputPW : ''
-          // }
+          this.setState({
+            isAuthenticated : "email",
+            user : confirmResult._user,
+            inputEmail : '',
+            inputPW : ''
+          });
+          this.props.navigation.navigate("Home",{isAuthenticated : this.state.isAuthenticated, user : this.state.user});
         }
       })
-      .catch(error =>{console.log(error);})
+      .catch(error =>{this.props.navigation.navigate("Home",{isAuthenticated : this.state.isAuthenticated, user : this.state.user});console.log(error);})
   }
   myTextInput({input,inputProps}) {
     return (
@@ -56,7 +94,7 @@ class Login extends Component {
     )
   }
   render() {
-    // if (!this.state.isAuthenticated) {
+    // if (this.state.isAuthenticated) {
     //   return (<View keyboardShouldPersistTaps={'handled'} style = {{flexDirection: 'column',flex : 1}}>
     //     <Text style={{fontWeight:'bold', fontSize:30, textAlign:'center'}}>Fail Auth</Text>
     //
@@ -83,10 +121,8 @@ class Login extends Component {
               <Text style = {{fontSize:25}}>Sign in</Text>
             </TouchableOpacity>
           </View>
-          <View style = {{flexDirection: 'row',flex : 1, alignItems: 'center'}}>
-          <TouchableOpacity style = {{backgroundColor: 'skyblue', width:300, left : 10}}>
-            <Text style = {{fontSize:25}}>Login with Google</Text>
-          </TouchableOpacity>
+          <View style={styles.container}>
+            <GoogleSigninButton style={{width: 312, height: 48}} color={GoogleSigninButton.Color.Light} size={GoogleSigninButton.Size.Wide} onPress={this.loginWithGoogle}/>
           </View>
           <View style={{flex:6}}>
           </View>
@@ -94,6 +130,8 @@ class Login extends Component {
     )
   }
 }
+
+
 const LoginForm = reduxForm({form : "test"})(Login);
 LoginForm.navigationOptions = {
   header: null

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { DrawerNavigator, NavigationActions } from "react-navigation";
-import {View, Text, TouchableOpacity} from "react-native";
+import {View, Text, TouchableOpacity, NativeModules} from "react-native";
 import PropTypes from 'prop-types';
 import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
 import firebase from 'react-native-firebase';
@@ -16,6 +16,7 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.logout = this.logout.bind(this);
+    this.toastTest = this.toastTest.bind(this);
   }
   logout() {
     const {state} = this.props.navigation;
@@ -25,7 +26,7 @@ class Home extends Component {
       .then((state)=>{
         console.log(state);
         this.props.navigation.navigate("Login");
-      }) 
+      })
       .catch((err)=>{console.log(err);})
     }else if(state.params.isAuthenticated === "google"){
       console.log("google");
@@ -37,7 +38,9 @@ class Home extends Component {
       console.log("else");
     }
   }
-
+  toastTest() {
+    NativeModules.ToastModule.show('Awesome Project!',NativeModules.ToastModule.SHORT);
+  }
   render() {
     // const {props : {isAuthenticated}} = this;
     const {state} = this.props.navigation;
@@ -49,6 +52,9 @@ class Home extends Component {
           <Text>LOGIN OK</Text>
           <TouchableOpacity onPress={this.logout} style = {{backgroundColor: 'skyblue', width:85, left : 10}}>
             <Text style = {{fontSize:25}}>Logout</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.toastTest} style = {{backgroundColor: 'skyblue', width:85, left : 10}}>
+            <Text style = {{fontSize:25}}>Toast</Text>
           </TouchableOpacity>
         </View>
       )

@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Image } from "react-native";
 import { reduxForm, Field } from 'redux-form';
-import { StyleSheet, Alert,TextInput, View, ScrollView, Text,TouchableOpacity,button } from 'react-native';
+import { NativeModules, StyleSheet, Alert,TextInput, View, ScrollView, Text,TouchableOpacity,button } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
+const { RNGoogleSignin } = NativeModules;
 
 const styles = StyleSheet.create({
   container: {
@@ -31,7 +32,7 @@ class Login extends Component {
 
   componentDidMount() {
     GoogleSignin.configure({
-      scopes : ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/user.birthday.read". "https://www.googleapis.com/auth/contacts"],
+      scopes : ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/user.birthday.read", "https://www.googleapis.com/auth/contacts"],
       webClientId : '833185333176-6khvc5to53hqeegui33pdlsdso2uco39.apps.googleusercontent.com',
       offlineAccess : false
     })
@@ -49,14 +50,17 @@ class Login extends Component {
   loginWithGoogle() {
     GoogleSignin.signIn()
     .then((user) => {
+      console.log(user);
       this.setState({isAuthenticated : "google", user: user});
       const cred = firebase.auth.GoogleAuthProvider.credential(
-          user.idToken,
+          user.idToken, 
           user.accessToken,
       );
-      // firebase.auth().signInWithCredential(cred).then(()=>{
-        this.props.navigation.navigate("Home",{isAuthenticated : this.state.isAuthenticated, user : this.state.user});
-      // }).catch(error=>{console.log('firebase error');})
+      this.props.navigation.navigate("Home",{isAuthenticated : this.state.isAuthenticated, user : this.state.user});
+      firebase.auth().signInWithCredential(cred).then(()=>{
+        console.log('firebase login');
+        RNGoogleSignin.signIn();
+      }).catch(error=>{console.log('firebase error');})
     })
     .catch((err) => {
       console.log('WRONG SIGNIN', err);

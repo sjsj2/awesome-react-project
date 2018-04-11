@@ -1,6 +1,7 @@
 package com.awesomeprojectn;
 
 import android.widget.Toast;
+import android.util.Log;
 
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;

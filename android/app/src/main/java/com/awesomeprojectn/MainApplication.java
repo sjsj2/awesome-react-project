@@ -29,7 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNFirebasePackage(),
             new RNGoogleSigninPackage(),
             new RNFirebaseAuthPackage(),
-            new ToastModulePackage()
+            new ToastModulePackage(),
+            new FirebaseGoogleAuthPackage()
       );
     }
 

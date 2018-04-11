@@ -5,7 +5,6 @@ import {View, Text, TouchableOpacity, NativeModules} from "react-native";
 import PropTypes from 'prop-types';
 import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
 import firebase from 'react-native-firebase';
-
 class Home extends Component {
   static navigationOptions = {
     header: null
@@ -40,6 +39,7 @@ class Home extends Component {
   }
   toastTest() {
     NativeModules.ToastModule.show('Awesome Project!',NativeModules.ToastModule.SHORT);
+    // NativeModules.FirebaseGoogleAuth.setConfigure();
   }
   render() {
     // const {props : {isAuthenticated}} = this;

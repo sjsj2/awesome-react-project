@@ -28,6 +28,7 @@ class Login extends Component {
     this.myTextInput = this.myTextInput.bind(this);
     this.loginWithEmail = this.loginWithEmail.bind(this);
     this.loginWithGoogle = this.loginWithGoogle.bind(this);
+    this.loginWithTest = this.loginWithTest.bind(this);
   }
 
   componentDidMount() {
@@ -45,22 +46,26 @@ class Login extends Component {
         }
       }).done();
     });
+    // NativeModules.FirebaseGoogleAuth.setConfigure();
   }
-
+  loginWithTest() {
+    // NativeModules.FirebaseGoogleAuth.getAccessToken().then((user)=>{
+    //   console.log('test'+user);
+    // });
+  }
   loginWithGoogle() {
     GoogleSignin.signIn()
     .then((user) => {
       console.log(user);
       this.setState({isAuthenticated : "google", user: user});
-      const cred = firebase.auth.GoogleAuthProvider.credential(
-          user.idToken, 
-          user.accessToken,
-      );
+      // const cred = firebase.auth.GoogleAuthProvider.credential(
+      //     user.idToken,
+      //     user.accessToken,
+      // );
       this.props.navigation.navigate("Home",{isAuthenticated : this.state.isAuthenticated, user : this.state.user});
-      firebase.auth().signInWithCredential(cred).then(()=>{
-        console.log('firebase login');
-        RNGoogleSignin.signIn();
-      }).catch(error=>{console.log('firebase error');})
+      // firebase.auth().signInWithCredential(cred).then(()=>{
+      //   console.log('firebase login');
+      // }).catch(error=>{console.log('firebase error');})
     })
     .catch((err) => {
       console.log('WRONG SIGNIN', err);
@@ -123,6 +128,9 @@ class Login extends Component {
             </TouchableOpacity>
             <TouchableOpacity style = {{backgroundColor: 'skyblue', width:85, left : 10}}>
               <Text style = {{fontSize:25}}>Sign in</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.loginWithTest} style = {{backgroundColor: 'skyblue', width:85, }}>
+              <Text style = {{fontSize:25}}> Test</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.container}>
